@@ -130,13 +130,17 @@ img {
 }
 
 .hero-photo {
+  position: relative;
   width: min(100%, 1010px);
   margin: 0;
 }
 
 .hero-photo figcaption {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
   text-align: right;
-  color: var(--ink);
+  color: #ffffff;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -497,8 +501,8 @@ address {
 
   .home-index {
     display: block;
-    min-height: auto;
-    padding: 8px 0 48px;
+    min-height: calc(100vh - 152px);
+    padding: 0;
   }
 
   .hero-photo {
@@ -506,7 +510,14 @@ address {
   }
 
   .hero-photo img {
-    height: min(58vh, 560px);
+    height: calc(100vh - 152px);
+    object-fit: cover;
+  }
+
+  .hero-photo figcaption {
+    right: 12px;
+    bottom: 10px;
+    color: #ffffff;
   }
 
   .work-overview {
