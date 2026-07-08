@@ -119,8 +119,10 @@ function updateNavVisibility() {
   nextButton.hidden = !hasMultipleImages;
 
   if (mobileCount) {
-    mobileCount.textContent = `${activeImageIndex + 1}/${activeGallery.length}`;
-    mobileCount.hidden = activeGallery.length <= 1;
+    const hasMultipleImages = activeGallery.length > 1;
+    mobileCount.textContent = hasMultipleImages ? `${activeImageIndex + 1}/${activeGallery.length}` : "";
+    mobileCount.hidden = !hasMultipleImages;
+    lightbox.classList.toggle("has-image-count", hasMultipleImages);
   }
 
   if (groupNextButton) {

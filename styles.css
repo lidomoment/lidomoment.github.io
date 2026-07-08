@@ -581,6 +581,10 @@ address {
     width: calc(100vw - 112px);
   }
 
+  .lightbox:not(.has-image-count) .lightbox-mobile-ui {
+    grid-template-columns: 1fr;
+  }
+
   .lightbox-count {
     justify-self: start;
   }
@@ -588,13 +592,15 @@ address {
   .lightbox-group-next {
     display: block;
     justify-self: center;
-    padding: 0;
+    min-width: 76px;
+    min-height: 44px;
+    padding: 0 14px;
     border: 0;
     background: transparent;
     color: var(--ink);
     cursor: pointer;
     font: inherit;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 500;
     letter-spacing: 0.03em;
     pointer-events: auto;
