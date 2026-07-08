@@ -166,6 +166,10 @@ img {
   border: 0;
 }
 
+.work-card-hidden {
+  display: none;
+}
+
 .work-card img {
   width: 100%;
   height: 100%;
