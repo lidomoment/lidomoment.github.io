@@ -534,27 +534,30 @@ address {
   }
 
   .lightbox {
-    padding: 64px 56px 40px;
+    padding: 64px 18px 92px;
   }
 
   .lightbox img {
-    max-width: calc(100vw - 112px);
-    max-height: calc(100vh - 124px);
+    max-width: calc(100vw - 36px);
+    max-height: calc(100vh - 156px);
   }
 
   .lightbox-prev,
   .lightbox-next {
+    top: auto;
+    bottom: 26px;
+    transform: none;
     width: 34px;
     height: 34px;
     font-size: 34px;
   }
 
   .lightbox-prev {
-    left: 12px;
+    left: calc(50% - 52px);
   }
 
   .lightbox-next {
-    right: 12px;
+    right: calc(50% - 52px);
   }
 
   .lightbox-close {
