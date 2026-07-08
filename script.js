@@ -6,6 +6,8 @@ const lightboxCaption = lightbox.querySelector("p");
 const closeButton = document.querySelector(".lightbox-close");
 const prevButton = document.querySelector(".lightbox-prev");
 const nextButton = document.querySelector(".lightbox-next");
+const mobileCount = document.querySelector(".lightbox-count");
+const groupNextButton = document.querySelector(".lightbox-group-next");
 const galleryButtons = [...document.querySelectorAll(".photo-button")];
 const workCards = [...document.querySelectorAll(".work-card")];
 const workToggles = [...document.querySelectorAll(".work-toggle")];
@@ -15,6 +17,10 @@ const overviewSection = document.querySelector(".work-overview");
 const imageSections = [...document.querySelectorAll(".image-sequence")];
 let activeImageIndex = 0;
 let activeGallery = galleryButtons;
+let activeGroupIndex = 0;
+let activeGroups = [{ items: galleryButtons }];
+let touchStartX = 0;
+let touchStartY = 0;
 
 menuButton?.addEventListener("click", () => {
   const isOpen = siteNav.classList.toggle("is-open");
@@ -110,6 +116,14 @@ function updateNavVisibility() {
   const hasMultipleImages = activeGallery.length > 1;
   prevButton.hidden = !hasMultipleImages;
   nextButton.hidden = !hasMultipleImages;
+
+  if (mobileCount) {
+    mobileCount.textContent = `${activeImageIndex + 1}/${activeGallery.length}`;
+  }
+
+  if (groupNextButton) {
+    groupNextButton.hidden = activeGroups.length <= 1;
+  }
 }
 
 function showImage(index) {
@@ -130,6 +144,32 @@ function getGalleryByName(galleryName) {
   return galleryButtons.filter((item) => item.dataset.gallery === galleryName);
 }
 
+function buildGroups(items) {
+  const groups = [];
+  const groupMap = new Map();
+
+  items.forEach((item) => {
+    const groupName = item.dataset.workGroup || item.dataset.gallery || item.getAttribute("href") || String(groups.length);
+
+    if (!groupMap.has(groupName)) {
+      const group = { name: groupName, items: [] };
+      groupMap.set(groupName, group);
+      groups.push(group);
+    }
+
+    groupMap.get(groupName).items.push(item);
+  });
+
+  return groups;
+}
+
+function setActiveGroup(groups, groupIndex, imageIndex = 0) {
+  activeGroups = groups.length ? groups : [{ items: activeGallery }];
+  activeGroupIndex = (groupIndex + activeGroups.length) % activeGroups.length;
+  activeGallery = activeGroups[activeGroupIndex].items;
+  showImage(Math.min(imageIndex, activeGallery.length - 1));
+}
+
 function openGallery(galleryName, startButton = null) {
   const selectedGallery = getGalleryByName(galleryName);
 
@@ -137,9 +177,8 @@ function openGallery(galleryName, startButton = null) {
     return;
   }
 
-  activeGallery = selectedGallery;
-  const startIndex = startButton ? Math.max(activeGallery.indexOf(startButton), 0) : 0;
-  showImage(startIndex);
+  const startIndex = startButton ? Math.max(selectedGallery.indexOf(startButton), 0) : 0;
+  setActiveGroup([{ name: galleryName, items: selectedGallery }], 0, startIndex);
   lightbox.hidden = false;
   (activeGallery.length > 1 ? nextButton : closeButton).focus();
 }
@@ -164,10 +203,12 @@ document.querySelectorAll("[data-open-gallery]").forEach((link) => {
 workCards.forEach((card, index) => {
   card.addEventListener("click", (event) => {
     event.preventDefault();
-    activeGallery = workCards;
-    showImage(index);
+    const groups = buildGroups(workCards);
+    const groupIndex = groups.findIndex((group) => group.items.includes(card));
+    const imageIndex = Math.max(groups[groupIndex].items.indexOf(card), 0);
+    setActiveGroup(groups, groupIndex, imageIndex);
     lightbox.hidden = false;
-    (activeGallery.length > 1 ? nextButton : closeButton).focus();
+    closeButton.focus();
     history.replaceState(null, "", card.getAttribute("href"));
   });
 });
@@ -185,9 +226,56 @@ function showNextImage() {
   showImage(activeImageIndex + 1);
 }
 
+function showNextGroup() {
+  if (activeGroups.length <= 1) {
+    return;
+  }
+
+  setActiveGroup(activeGroups, activeGroupIndex + 1, 0);
+  const activeItem = activeGallery[0];
+  const href = activeItem?.getAttribute("href");
+
+  if (href) {
+    history.replaceState(null, "", href);
+  }
+}
+
+function showSwipeImage(delta) {
+  const nextIndex = activeImageIndex + delta;
+
+  if (nextIndex < 0 || nextIndex >= activeGallery.length) {
+    return;
+  }
+
+  showImage(nextIndex);
+}
+
 closeButton.addEventListener("click", closeLightbox);
 prevButton.addEventListener("click", showPreviousImage);
 nextButton.addEventListener("click", showNextImage);
+groupNextButton?.addEventListener("click", showNextGroup);
+
+lightbox.addEventListener("touchstart", (event) => {
+  const touch = event.touches[0];
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+}, { passive: true });
+
+lightbox.addEventListener("touchend", (event) => {
+  if (lightbox.hidden || !event.changedTouches.length) {
+    return;
+  }
+
+  const touch = event.changedTouches[0];
+  const deltaX = touch.clientX - touchStartX;
+  const deltaY = touch.clientY - touchStartY;
+
+  if (Math.abs(deltaX) < 48 || Math.abs(deltaX) < Math.abs(deltaY) * 1.4) {
+    return;
+  }
+
+  showSwipeImage(deltaX < 0 ? 1 : -1);
+}, { passive: true });
 
 lightbox.addEventListener("click", (event) => {
   if (event.target === lightbox) {

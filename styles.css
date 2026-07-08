@@ -327,6 +327,10 @@ address {
   display: none;
 }
 
+.lightbox-mobile-ui {
+  display: none;
+}
+
 .lightbox-close {
   position: fixed;
   top: 24px;
@@ -536,30 +540,51 @@ address {
   }
 
   .lightbox {
-    padding: 64px 18px 92px;
+    padding: 72px 18px 44px;
   }
 
   .lightbox img {
     max-width: calc(100vw - 36px);
-    max-height: calc(100vh - 156px);
+    max-height: calc(100vh - 130px);
   }
 
   .lightbox-prev,
   .lightbox-next {
-    top: auto;
-    bottom: 26px;
-    transform: none;
-    width: 34px;
-    height: 34px;
-    font-size: 34px;
+    display: none;
   }
 
-  .lightbox-prev {
-    left: calc(50% - 52px);
+  .lightbox-mobile-ui {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    z-index: 11;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    width: calc(100vw - 112px);
+    transform: translateX(-50%);
+    pointer-events: none;
   }
 
-  .lightbox-next {
-    right: calc(50% - 52px);
+  .lightbox-count {
+    justify-self: start;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 400;
+  }
+
+  .lightbox-group-next {
+    justify-self: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    pointer-events: auto;
   }
 
   .lightbox-close {
