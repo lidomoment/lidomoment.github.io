@@ -534,11 +534,12 @@ address {
   }
 
   .lightbox {
-    padding: 52px 12px 24px;
+    padding: 64px 56px 40px;
   }
 
   .lightbox img {
-    max-height: calc(100vh - 92px);
+    max-width: calc(100vw - 112px);
+    max-height: calc(100vh - 124px);
   }
 
   .lightbox-prev,
@@ -549,11 +550,11 @@ address {
   }
 
   .lightbox-prev {
-    left: 14px;
+    left: 12px;
   }
 
   .lightbox-next {
-    right: 14px;
+    right: 12px;
   }
 
   .lightbox-close {
