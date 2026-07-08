@@ -460,7 +460,8 @@ address {
     align-items: start;
     justify-items: start;
     padding: 30px 22px 22px;
-    background: #ffffff;
+    background: transparent;
+    pointer-events: none;
   }
 
   .brand {
@@ -470,6 +471,8 @@ address {
     font-size: 24px;
     font-weight: 600;
     line-height: 1;
+    background: #ffffff;
+    pointer-events: auto;
   }
 
   .menu-button {
@@ -484,6 +487,7 @@ address {
     font-size: 20px;
     font-weight: 700;
     line-height: 1.1;
+    pointer-events: auto;
   }
 
   .page-shell {
