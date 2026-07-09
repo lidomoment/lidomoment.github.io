@@ -22,6 +22,30 @@ let activeGroups = [{ items: galleryButtons }];
 let touchStartX = 0;
 let touchStartY = 0;
 
+function setWorkCardImageFit(card) {
+  const image = card.querySelector("img");
+
+  if (!image || !image.naturalWidth || !image.naturalHeight) {
+    return;
+  }
+
+  card.classList.toggle("work-card-landscape", image.naturalWidth > image.naturalHeight);
+}
+
+workCards.forEach((card) => {
+  const image = card.querySelector("img");
+
+  if (!image) {
+    return;
+  }
+
+  if (image.complete) {
+    setWorkCardImageFit(card);
+  } else {
+    image.addEventListener("load", () => setWorkCardImageFit(card), { once: true });
+  }
+});
+
 function hideImages() {
   imageSections.forEach((section) => {
     section.hidden = true;
