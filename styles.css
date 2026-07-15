@@ -329,7 +329,7 @@ figcaption {
 .info-copy p {
   margin: 0 0 22px;
   color: #5f5b54;
-  font-size: 14px;
+  font-size: 18px;
   line-height: 1.55;
 }
 
@@ -367,7 +367,12 @@ address {
   max-height: calc(100dvh - 100px);
   margin: auto;
   object-fit: contain;
+  opacity: 1;
   box-shadow: none;
+}
+
+.lightbox.lightbox-loading img {
+  opacity: 0;
 }
 
 .lightbox.lightbox-landscape img {
@@ -773,7 +778,7 @@ address {
   }
 
   .info-copy p {
-    font-size: 14px;
+    font-size: 18px;
   }
 
   .lightbox-mobile-ui {

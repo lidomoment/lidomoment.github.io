@@ -21,6 +21,8 @@ let activeGroupIndex = 0;
 let activeGroups = [{ items: galleryButtons }];
 let touchStartX = 0;
 let touchStartY = 0;
+let lightboxImageLoadToken = 0;
+const preloadedLightboxSources = new Set();
 
 function updateLightboxMetrics() {
   if (lightbox.hidden || !lightboxImage.complete || !lightboxImage.naturalWidth) {
@@ -45,6 +47,34 @@ function updateLightboxImageOrientation() {
   lightbox.classList.toggle("lightbox-landscape", isLandscape);
   lightbox.classList.toggle("lightbox-portrait", !isLandscape);
   updateLightboxMetrics();
+}
+
+function getLightboxImageSource(item) {
+  const image = item?.querySelector("img");
+  return image ? image.dataset.fullSrc || image.src : "";
+}
+
+function preloadLightboxImage(index) {
+  if (activeGallery.length <= 1) {
+    return;
+  }
+
+  const item = activeGallery[(index + activeGallery.length) % activeGallery.length];
+  const src = getLightboxImageSource(item);
+
+  if (!src || preloadedLightboxSources.has(src)) {
+    return;
+  }
+
+  preloadedLightboxSources.add(src);
+  const preload = new Image();
+  preload.decoding = "async";
+  preload.src = src;
+}
+
+function preloadNearbyLightboxImages() {
+  preloadLightboxImage(activeImageIndex - 1);
+  preloadLightboxImage(activeImageIndex + 1);
 }
 
 function setWorkCardImageFit(card) {
@@ -178,13 +208,25 @@ function showImage(index) {
   activeImageIndex = (index + activeGallery.length) % activeGallery.length;
   const button = activeGallery[activeImageIndex];
   const image = button.querySelector("img");
+  const nextSrc = getLightboxImageSource(button);
+  const loadToken = ++lightboxImageLoadToken;
+
+  lightbox.classList.add("lightbox-loading");
   lightbox.classList.remove("lightbox-landscape", "lightbox-portrait");
-  lightboxImage.onload = updateLightboxImageOrientation;
-  lightboxImage.src = image.dataset.fullSrc || image.src;
+  lightboxImage.onload = () => {
+    if (loadToken !== lightboxImageLoadToken) {
+      return;
+    }
+
+    lightbox.classList.remove("lightbox-loading");
+    updateLightboxImageOrientation();
+    preloadNearbyLightboxImages();
+  };
+  lightboxImage.src = nextSrc;
   lightboxImage.alt = image.alt;
   lightboxCaption.textContent = button.dataset.caption || image.alt || "";
   if (lightboxImage.complete && lightboxImage.naturalWidth) {
-    updateLightboxImageOrientation();
+    lightboxImage.onload();
   } else {
     updateLightboxMetrics();
   }
@@ -287,10 +329,11 @@ visibleWorkCards.forEach((card) => {
 });
 
 function closeLightbox() {
+  lightboxImageLoadToken += 1;
   lightbox.hidden = true;
   lightboxImage.onload = null;
   lightboxImage.removeAttribute("src");
-  lightbox.classList.remove("lightbox-landscape", "lightbox-portrait");
+  lightbox.classList.remove("lightbox-loading", "lightbox-landscape", "lightbox-portrait");
 }
 
 function showPreviousImage() {
