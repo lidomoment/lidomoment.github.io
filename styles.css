@@ -1,12 +1,12 @@
-/* A font by Jos Buivenga (exljbris) -> www.exljbris.com */
 @font-face {
-  font-family: "Museo";
-  src: url("assets/fonts/museo/Museo300-Regular.otf") format("opentype");
-  font-weight: 300;
+  font-family: "Manrope";
+  src: url("assets/fonts/manrope/Manrope-Variable.ttf") format("truetype");
+  font-weight: 200 800;
   font-style: normal;
   font-display: swap;
 }
 
+/* A font by Jos Buivenga (exljbris) -> www.exljbris.com */
 @font-face {
   font-family: "Museo";
   src: url("assets/fonts/museo/Museo500-Regular.otf") format("opentype");
@@ -24,7 +24,8 @@
   --line: #e1ddd4;
   --focus: #8c765f;
   --nav-width: 220px;
-  --font-main: "Museo", Georgia, "Times New Roman", serif;
+  --font-main: "Manrope", Arial, Helvetica, sans-serif;
+  --font-logo: "Museo", Georgia, "Times New Roman", serif;
 }
 
 * {
@@ -100,7 +101,7 @@ img {
   display: inline-block;
   margin-bottom: 74px;
   color: var(--nav-ink);
-  font-family: var(--font-main);
+  font-family: var(--font-logo);
   font-size: 34px;
   font-weight: 500;
   line-height: 1;
@@ -286,10 +287,15 @@ h2 {
   outline-offset: 6px;
 }
 
-.hero-photo img,
 .photo-frame img {
   background: var(--paper);
   border: 1px solid rgba(23, 23, 23, 0.06);
+  box-shadow: none;
+}
+
+.hero-photo img {
+  background: transparent;
+  border: 0;
   box-shadow: none;
 }
 
@@ -322,8 +328,8 @@ figcaption {
 
 .info-copy p {
   margin: 0 0 22px;
-  color: var(--muted);
-  font-size: 18px;
+  color: #5f5b54;
+  font-size: 14px;
   line-height: 1.55;
 }
 
@@ -550,7 +556,7 @@ address {
   .brand {
     display: inline-block;
     color: var(--nav-ink);
-    font-family: var(--font-main);
+    font-family: var(--font-logo);
     font-size: 36px;
     font-weight: 500;
     line-height: 1;
@@ -767,7 +773,7 @@ address {
   }
 
   .info-copy p {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .lightbox-mobile-ui {
